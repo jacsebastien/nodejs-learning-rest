@@ -1,6 +1,7 @@
 {
-  "name": "node-complete-social-network-prep",
+  "name": "nodejs-learning-rest-frontend",
   "version": "0.1.0",
+  "description": "Frontend part downloaded from REST API part of Udemy course: https://www.udemy.com/course/nodejs-the-complete-guide/",
   "private": true,
   "dependencies": {
     "react": "^16.5.2",

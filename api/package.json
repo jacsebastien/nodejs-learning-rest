@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-learning-rest",
+  "name": "nodejs-learning-rest-api",
   "version": "1.0.0",
-  "description": "My code following REST API part of Udemy course: https://www.udemy.com/course/nodejs-the-complete-guide/",
+  "description": "API part of my code following REST API part of Udemy course: https://www.udemy.com/course/nodejs-the-complete-guide/",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
