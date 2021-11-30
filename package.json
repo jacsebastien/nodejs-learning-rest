@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "My code following REST API part of Udemy course: https://www.udemy.com/course/nodejs-the-complete-guide/",
   "scripts": {
+    "install-api": "cd api && npm install",
+    "install-front": "cd frontend && npm install",
     "start-api": "cd api && npm start",
     "start-front": "cd frontend && npm start"
   },
