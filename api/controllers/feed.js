@@ -22,22 +22,32 @@ exports.getPosts = (req, res, next) => {
 exports.postPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({
-      message: "Validation errors",
-      errors: errors.array(),
-    });
+    const error = new Error("POST post: validation errors");
+    error.statusCode = 422;
+    error.errors = errors.array();
+    throw error;
   }
 
   const { title, content } = req.body;
-  const post = new Post({ title, content, imageUrl: 'images/tw3.png', creator: { name: "Seb" } });
+  const post = new Post({
+    title,
+    content,
+    imageUrl: "images/tw3.png",
+    creator: { name: "Seb" },
+  });
 
   post
     .save()
-    .then(result => {
+    .then((result) => {
       res.status(201).json({
         message: "Post created successfully.",
         post: result,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };
