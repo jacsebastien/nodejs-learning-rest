@@ -1,13 +1,34 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const mongoose = require("mongoose");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
 
 const feedRoutes = require("./routes/feed");
-const mongoose = require("mongoose");
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images"); // store images in /images folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, uuidv4()); // create a uuid to store the name
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowedMimeTypes = ["image/png", "image/jpg", "image/jpeg"];
+  if (allowedMimeTypes.indexOf(file.mimetype) !== -1) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.use(bodyParser.json()); // application/json
+app.use(multer({ storage: fileStorage, fileFilter }).single("image")); // get the 'image' field and store the file from it
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use((req, res, next) => {

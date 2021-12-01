@@ -13,17 +13,24 @@ exports.getPosts = (req, res, next) => {
 exports.postPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error("POST post: validation errors");
+    const error = new Error("POST post: Validation errors");
     error.statusCode = 422;
     error.errors = errors.array();
     throw error;
   }
+  // multer store image infos in 'file' property
+  if(!req.file) {
+    const error = new Error("POST post: No image provided");
+    error.statusCode = 422;
+    throw error;
+  }
 
   const { title, content } = req.body;
+  const imageUrl = req.file.path.replace("\\" ,"/");
   const post = new Post({
     title,
     content,
-    imageUrl: "images/tw3.png",
+    imageUrl,
     creator: { name: "Seb" },
   });
 
