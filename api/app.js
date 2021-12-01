@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const feedRoutes = require("./routes/feed");
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -19,4 +20,11 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 
-app.listen(8080);
+mongoose
+  .connect(
+    "mongodb+srv://seb:root@nodejscompleterest.shagb.mongodb.net/nodejsRest?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    app.listen(8080);
+  })
+  .catch((err) => console.log(err));
