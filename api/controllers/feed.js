@@ -75,7 +75,7 @@ exports.getPost = (req, res, next) => {
 exports.updatePost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const error = new Error("POST post: Validation errors");
+    const error = new Error("PUT post: Validation errors");
     error.statusCode = 422;
     error.errors = errors.array();
     throw error;
@@ -86,7 +86,7 @@ exports.updatePost = (req, res, next) => {
   const imageUrl = req.file ? req.file.path.replace("\\", "/") : req.body.image;
 
   if (!imageUrl) {
-    const error = new Error("POST post: No image provided");
+    const error = new Error("PUT post: No image provided");
     error.statusCode = 422;
     throw error;
   }
