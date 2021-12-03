@@ -27,4 +27,6 @@ router.put(
   feedCtrl.updatePost
 );
 
+router.delete("/post/:postId", feedCtrl.deletePost);
+
 module.exports = router;

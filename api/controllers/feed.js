@@ -44,9 +44,7 @@ exports.createPost = (req, res, next) => {
         post: result,
       });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
 };
 
 exports.getPost = (req, res, next) => {
@@ -61,9 +59,7 @@ exports.getPost = (req, res, next) => {
 
       res.status(200).json({ post });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
 };
 
 exports.updatePost = (req, res, next) => {
@@ -105,9 +101,26 @@ exports.updatePost = (req, res, next) => {
     .then((result) => {
       res.status(200).json({ post: result });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
+};
+
+exports.deletePost = (req, res, next) => {
+  const postId = req.params.postId;
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error("Post not found.");
+        error.statusCode = 404;
+        throw error;
+      }
+      // TODO: Check if user can delete the post
+      clearImage(post.imageUrl);
+      return Post.findByIdAndRemove(postId);
+    })
+    .then(() => {
+      res.status(200).json({ deletedPost: postId });
+    })
+    .catch((err) => next(err));
 };
 
 const clearImage = (filePath) => {
