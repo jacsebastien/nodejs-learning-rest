@@ -2,7 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 
 const User = require("../models/user");
-const authController = require("../controllers/auth");
+const authCtrl = require("../controllers/auth");
 
 const router = express.Router();
 
@@ -20,7 +20,9 @@ router.put(
     body("password").trim().isLength({ min: 5 }),
     body("name").trim().not().isEmpty(),
   ],
-  authController.signup
+  authCtrl.signup
 );
+
+router.post("/login", authCtrl.login);
 
 module.exports = router;

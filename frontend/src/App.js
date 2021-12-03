@@ -12,7 +12,7 @@ import SinglePostPage from "./pages/Feed/SinglePost/SinglePost";
 import LoginPage from "./pages/Auth/Login";
 import SignupPage from "./pages/Auth/Signup";
 import "./App.css";
-import { baseUrl } from "./util/constants";
+import { authBaseUrl } from "./util/constants";
 
 class App extends Component {
   state = {
@@ -60,7 +60,16 @@ class App extends Component {
   loginHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch("URL")
+
+    const { email, password } = authData;
+
+    fetch(`${authBaseUrl}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
       .then((res) => {
         if (res.status === 422) {
           throw new Error("Validation failed.");
@@ -104,7 +113,7 @@ class App extends Component {
 
     const { email, password, name } = authData.signupForm;
 
-    fetch(`${baseUrl}/auth/signup`, {
+    fetch(`${authBaseUrl}/signup`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
