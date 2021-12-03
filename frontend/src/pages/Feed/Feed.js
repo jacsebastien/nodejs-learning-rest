@@ -60,7 +60,10 @@ class Feed extends Component {
       })
       .then((resData) => {
         this.setState({
-          posts: resData.posts,
+          posts: resData.posts.map(post => ({
+            ...post,
+            imagePath: post.imageUrl
+          })),
           totalPosts: resData.totalItems,
           postsLoading: false,
         });
@@ -113,7 +116,7 @@ class Feed extends Component {
 
     const { url, method } = this.state.editPost
       ? {
-          url: `URL`,
+          url:  `${baseFeedUrl}/post/${this.state.editPost._id}`,
           method: "PUT",
         }
       : {
