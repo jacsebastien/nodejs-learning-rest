@@ -8,7 +8,7 @@ import Paginator from "../../components/Paginator/Paginator";
 import Loader from "../../components/Loader/Loader";
 import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 import "./Feed.css";
-import { feedBaseUrl } from "../../util/constants";
+import { feedBaseUrl, userBaseUrl } from "../../util/constants";
 
 class Feed extends Component {
   state = {
@@ -23,7 +23,9 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch("URL")
+    fetch(`${userBaseUrl}/status`, {
+      headers: { Authorization: `Bearer ${this.props.token}` },
+    })
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch user status.");
@@ -75,7 +77,14 @@ class Feed extends Component {
 
   statusUpdateHandler = (event) => {
     event.preventDefault();
-    fetch("URL")
+    fetch(`${userBaseUrl}/status`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${this.props.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: this.state.status }),
+    })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Can't update status!");

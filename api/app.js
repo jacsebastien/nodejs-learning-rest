@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 const headerMiddleware = require("./middleware/header");
 const errorMiddleware = require("./middleware/error");
@@ -21,6 +22,7 @@ app.use(headerMiddleware);
 
 app.use("/feed", feedRoutes);
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 
 app.use(errorMiddleware);
 
