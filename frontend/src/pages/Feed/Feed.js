@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import openSocket from "socket.io-client";
 
 import Post from "../../components/Feed/Post/Post";
 import Button from "../../components/Button/Button";
@@ -8,7 +9,7 @@ import Paginator from "../../components/Paginator/Paginator";
 import Loader from "../../components/Loader/Loader";
 import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 import "./Feed.css";
-import { feedBaseUrl, userBaseUrl } from "../../util/constants";
+import { baseUrl, feedBaseUrl, userBaseUrl } from "../../util/constants";
 
 class Feed extends Component {
   state = {
@@ -23,6 +24,12 @@ class Feed extends Component {
   };
 
   componentDidMount() {
+    this.fetchStatus();
+    this.loadPosts();
+    this.initSocketConnection();
+  }
+
+  fetchStatus = () => {
     fetch(`${userBaseUrl}/status`, {
       headers: { Authorization: `Bearer ${this.props.token}` },
     })
@@ -36,9 +43,7 @@ class Feed extends Component {
         this.setState({ status: resData.status });
       })
       .catch(this.catchError);
-
-    this.loadPosts();
-  }
+  };
 
   loadPosts = (direction) => {
     if (direction) {
@@ -73,6 +78,10 @@ class Feed extends Component {
         });
       })
       .catch(this.catchError);
+  };
+
+  initSocketConnection = () => {
+    openSocket(baseUrl);
   };
 
   statusUpdateHandler = (event) => {

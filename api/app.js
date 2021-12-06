@@ -10,6 +10,7 @@ const userRoutes = require("./routes/user");
 const headerMiddleware = require("./middleware/header");
 const errorMiddleware = require("./middleware/error");
 const fileUploadMiddleware = require("./middleware/fileUpload");
+const { initWebsocket } = require("./middleware/websockets");
 
 const app = express();
 
@@ -31,6 +32,7 @@ mongoose
     "mongodb+srv://seb:root@nodejscompleterest.shagb.mongodb.net/nodejsRest?retryWrites=true&w=majority"
   )
   .then(() => {
-    app.listen(8080);
+    const server = app.listen(8080);
+    initWebsocket(server);
   })
   .catch((err) => console.log(err));
