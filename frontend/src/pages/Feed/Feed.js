@@ -26,7 +26,7 @@ class Feed extends Component {
   componentDidMount() {
     this.fetchStatus();
     this.loadPosts();
-    this.initSocketConnection();
+    this.handleSocketConnection();
   }
 
   fetchStatus = () => {
@@ -43,6 +43,22 @@ class Feed extends Component {
         this.setState({ status: resData.status });
       })
       .catch(this.catchError);
+  };
+
+  addPost = (post) => {
+    this.setState((prevState) => {
+      const updatedPosts = [...prevState.posts];
+      if (prevState.postPage === 1) {
+        if (prevState.posts.length >= 2) {
+          updatedPosts.pop();
+        }
+        updatedPosts.unshift(post);
+      }
+      return {
+        posts: updatedPosts,
+        totalPosts: prevState.totalPosts + 1,
+      };
+    });
   };
 
   loadPosts = (direction) => {
@@ -80,8 +96,17 @@ class Feed extends Component {
       .catch(this.catchError);
   };
 
-  initSocketConnection = () => {
-    openSocket(baseUrl);
+  handleSocketConnection = () => {
+    const socket = openSocket(baseUrl);
+    socket.on('posts', data => {
+      const {action, post} = data
+      switch(action) {
+        case 'create':
+          this.addPost(post);
+          break
+        default:
+      }
+    })
   };
 
   statusUpdateHandler = (event) => {
@@ -171,8 +196,6 @@ class Feed extends Component {
               (p) => p._id === prevState.editPost._id
             );
             updatedPosts[postIndex] = post;
-          } else if (prevState.posts.length < 2) {
-            updatedPosts = prevState.posts.concat(post);
           }
           return {
             posts: updatedPosts,

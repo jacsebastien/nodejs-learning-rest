@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 
 const Post = require("../models/post");
 const User = require("../models/user");
+const { getIo } = require("../middleware/websockets");
 
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
@@ -52,13 +53,15 @@ exports.createPost = async (req, res, next) => {
     user.posts.push(post);
     await user.save();
 
+    getIo().emit("posts", {
+      action: "create",
+      post: { ...post._doc, creator: user },
+    });
+
     res.status(201).json({
       message: "Post created successfully.",
       post: post,
-      creator: {
-        _id: user._id,
-        name: user.name,
-      },
+      creator: user,
     });
   } catch (err) {
     next(err);
