@@ -126,7 +126,11 @@ class Feed extends Component {
           method: "POST",
         };
 
-    fetch(url, { method, body: formData })
+    fetch(url, {
+      method,
+      body: formData,
+      headers: { Authorization: `Bearer ${this.props.token}` },
+    })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Creating or editing a post failed!");
@@ -179,6 +183,7 @@ class Feed extends Component {
     this.setState({ postsLoading: true });
     fetch(`${feedBaseUrl}/post/${postId}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${this.props.token}` },
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {

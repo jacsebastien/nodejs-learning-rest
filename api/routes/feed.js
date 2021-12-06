@@ -11,6 +11,7 @@ router.get("/posts", authGuard, feedCtrl.getPosts);
 // POST /feed/post
 router.post(
   "/post",
+  authGuard,
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
@@ -22,6 +23,7 @@ router.get("/post/:postId", feedCtrl.getPost);
 
 router.put(
   "/post/:postId",
+  authGuard,
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
@@ -29,6 +31,6 @@ router.put(
   feedCtrl.updatePost
 );
 
-router.delete("/post/:postId", feedCtrl.deletePost);
+router.delete("/post/:postId", authGuard, feedCtrl.deletePost);
 
 module.exports = router;
