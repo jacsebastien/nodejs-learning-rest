@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-learning-rest",
+  "version": "1.0.0",
+  "description": "My code following REST API part of Udemy course: https://www.udemy.com/course/nodejs-the-complete-guide/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacsebastien/nodejs-learning-rest.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacsebastien/nodejs-learning-rest/issues"
+  },
+  "homepage": "https://github.com/jacsebastien/nodejs-learning-rest#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.11.12"
+  }
+}
