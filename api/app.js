@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
@@ -15,6 +16,7 @@ const { initWebsocket } = require("./middleware/websockets");
 
 const app = express();
 
+app.use(helmet());
 app.use(bodyParser.json()); // application/json
 app.use(fileUploadMiddleware); // get the 'image' field and store the file from it
 app.use("/images", express.static(path.join(__dirname, "images")));
