@@ -167,7 +167,6 @@ exports.deletePost = async (req, res, next) => {
 };
 
 const clearImage = (filePath) => {
-  // eslint-disable-next-line no-undef
   filePath = path.join(__dirname, "..", filePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
