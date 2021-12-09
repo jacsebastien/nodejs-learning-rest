@@ -2,3 +2,5 @@ node_modules/
 images/*
 .env
 *.log
+server.cert
+server.key
