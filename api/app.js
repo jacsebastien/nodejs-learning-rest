@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -27,11 +28,9 @@ app.use("/user", userRoutes);
 app.use(errorMiddleware);
 
 mongoose
-  .connect(
-    "mongodb+srv://seb:root@nodejscompleterest.shagb.mongodb.net/nodejsRest?retryWrites=true&w=majority"
-  )
+  .connect(process.env.MONGODB_CONNECTION_STRING)
   .then(() => {
-    const server = app.listen(8080);
+    const server = app.listen(process.env.PORT);
     initWebsocket(server);
   })
   .catch((err) => console.log(err));

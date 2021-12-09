@@ -5,6 +5,7 @@
   "scripts": {
     "install-api": "cd api && npm install",
     "install-front": "cd frontend && npm install",
+    "install-all": "npm run install-api && npm run install-front",
     "start-api": "cd api && npm start",
     "start-front": "cd frontend && npm start"
   },

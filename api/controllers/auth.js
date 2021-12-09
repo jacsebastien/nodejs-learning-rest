@@ -56,7 +56,7 @@ exports.login = async (req, res, next) => {
         email: user.email,
         userId,
       },
-      "nodejs on the rock !",
+      process.env.JWT_SALT,
       { expiresIn: "1h" }
     );
 
