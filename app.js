@@ -15,6 +15,8 @@ const fileUploadMiddleware = require("./middleware/fileUpload");
 const { initWebsocket } = require("./middleware/websockets");
 const loggingMiddleware = require("./middleware/logging");
 
+const https = require("./config/https");
+
 const app = express();
 
 app.use(helmet());
@@ -34,7 +36,8 @@ app.use(errorMiddleware);
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING)
   .then(() => {
-    const server = app.listen(process.env.PORT);
+    // const server = app.listen(process.env.PORT);
+    const server = https.createServer(app).listen(process.env.PORT);
     initWebsocket(server);
   })
   .catch((err) => console.log(err));
