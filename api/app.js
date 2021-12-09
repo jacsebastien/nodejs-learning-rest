@@ -13,10 +13,12 @@ const headerMiddleware = require("./middleware/header");
 const errorMiddleware = require("./middleware/error");
 const fileUploadMiddleware = require("./middleware/fileUpload");
 const { initWebsocket } = require("./middleware/websockets");
+const loggingMiddleware = require("./middleware/logging");
 
 const app = express();
 
 app.use(helmet());
+app.use(loggingMiddleware);
 app.use(bodyParser.json()); // application/json
 app.use(fileUploadMiddleware); // get the 'image' field and store the file from it
 app.use("/images", express.static(path.join(__dirname, "images")));
