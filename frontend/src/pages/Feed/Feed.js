@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import openSocket from "socket.io-client";
 
 import Post from "../../components/Feed/Post/Post";
 import Button from "../../components/Button/Button";
@@ -8,7 +9,7 @@ import Paginator from "../../components/Paginator/Paginator";
 import Loader from "../../components/Loader/Loader";
 import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 import "./Feed.css";
-import { feedBaseUrl, userBaseUrl } from "../../util/constants";
+import { baseUrl, feedBaseUrl, userBaseUrl } from "../../util/constants";
 
 class Feed extends Component {
   state = {
@@ -23,6 +24,12 @@ class Feed extends Component {
   };
 
   componentDidMount() {
+    this.fetchStatus();
+    this.loadPosts();
+    this.handleSocketConnection();
+  }
+
+  fetchStatus = () => {
     fetch(`${userBaseUrl}/status`, {
       headers: { Authorization: `Bearer ${this.props.token}` },
     })
@@ -36,9 +43,23 @@ class Feed extends Component {
         this.setState({ status: resData.status });
       })
       .catch(this.catchError);
+  };
 
-    this.loadPosts();
-  }
+  addPost = (post) => {
+    this.setState((prevState) => {
+      const updatedPosts = [...prevState.posts];
+      if (prevState.postPage === 1) {
+        if (prevState.posts.length >= 2) {
+          updatedPosts.pop();
+        }
+        updatedPosts.unshift(post);
+      }
+      return {
+        posts: updatedPosts,
+        totalPosts: prevState.totalPosts + 1,
+      };
+    });
+  };
 
   loadPosts = (direction) => {
     if (direction) {
@@ -73,6 +94,40 @@ class Feed extends Component {
         });
       })
       .catch(this.catchError);
+  };
+
+  handleSocketConnection = () => {
+    const socket = openSocket(baseUrl);
+    socket.on("posts", (data) => {
+      const { action, post } = data;
+      switch (action) {
+        case "create":
+          this.addPost(post);
+          break;
+        case "update":
+          this.updatePost(post);
+          break;
+        case "delete":
+          this.loadPosts();
+          break;
+        default:
+      }
+    });
+  };
+
+  updatePost = (post) => {
+    this.setState((prevState) => {
+      const updatedPosts = [...prevState.posts];
+      const updatedPostIndex = updatedPosts.findIndex(
+        (p) => p._id === post._id
+      );
+      if (updatedPostIndex !== -1) {
+        updatedPosts[updatedPostIndex] = post;
+      }
+      return {
+        posts: updatedPosts,
+      };
+    });
   };
 
   statusUpdateHandler = (event) => {
@@ -148,25 +203,8 @@ class Feed extends Component {
       })
       .then((resData) => {
         console.log(resData);
-        const post = {
-          _id: resData.post._id,
-          title: resData.post.title,
-          content: resData.post.content,
-          creator: resData.post.creator,
-          createdAt: resData.post.createdAt,
-        };
-        this.setState((prevState) => {
-          let updatedPosts = [...prevState.posts];
-          if (prevState.editPost) {
-            const postIndex = prevState.posts.findIndex(
-              (p) => p._id === prevState.editPost._id
-            );
-            updatedPosts[postIndex] = post;
-          } else if (prevState.posts.length < 2) {
-            updatedPosts = prevState.posts.concat(post);
-          }
+        this.setState(() => {
           return {
-            posts: updatedPosts,
             isEditing: false,
             editPost: null,
             editLoading: false,
@@ -202,10 +240,6 @@ class Feed extends Component {
       })
       .then((resData) => {
         console.log(resData);
-        this.setState((prevState) => {
-          const updatedPosts = prevState.posts.filter((p) => p._id !== postId);
-          return { posts: updatedPosts, postsLoading: false };
-        });
       })
       .catch((err) => {
         console.log(err);
