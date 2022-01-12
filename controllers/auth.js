@@ -61,7 +61,9 @@ exports.login = async (req, res, next) => {
     );
 
     res.status(200).json({ token, userId });
+    return;
   } catch (err) {
     next(err);
+    return err;
   }
 };
