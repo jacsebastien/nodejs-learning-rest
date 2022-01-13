@@ -34,6 +34,9 @@ describe("User Controller - Get Status", () => {
         UserCtrl.getStatus(req, res, () => {}).then(() => {
           expect(res.statusCode).to.be.equal(200);
           expect(res.userStatus).to.be.equal("I'm new");
+          User.deleteMany({})
+            .then(() => mongoose.disconnect())
+            .then(() => done());
         });
       })
       .catch((err) => console.log(err));
