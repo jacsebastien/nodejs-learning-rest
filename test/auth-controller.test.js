@@ -5,8 +5,11 @@ const User = require("../models/user");
 const AuthCtrl = require("../controllers/auth");
 
 describe("Auth Controller - Login", () => {
-  it("Should throw an error if accessing the database fails", (done) => {
+  before(() => {
     sinon.stub(User, "findOne");
+  });
+
+  it("Should throw an error if accessing the database fails", (done) => {
     User.findOne.throws();
 
     const req = {
@@ -20,7 +23,9 @@ describe("Auth Controller - Login", () => {
       expect(result).to.be.an("error");
       done();
     });
+  });
 
+  after(() => {
     User.findOne.restore();
   });
 });
