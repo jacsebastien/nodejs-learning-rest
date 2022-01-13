@@ -3,9 +3,9 @@ const expect = require("chai").expect;
 const mongoose = require("mongoose");
 
 const User = require("../models/user");
-const UserCtrl = require("../controllers/user");
+const FeedCtrl = require("../controllers/feed");
 
-describe("User Controller - Get Status", () => {
+describe("Feed Controller", () => {
   let createdUserId = null;
 
   before((done) => {
@@ -26,23 +26,37 @@ describe("User Controller - Get Status", () => {
       });
   });
 
-  it("Should send a response with valid user status for existing user", (done) => {
-    const req = { userId: createdUserId };
+  it("Should create a post for the user", (done) => {
+    const req = {
+      body: {
+        title: "Test post",
+        content: "A test post",
+      },
+      file: {
+        path: "a/test/path",
+      },
+      userId: createdUserId,
+    };
+
     const res = {
       statusCode: 500,
-      userStatus: null,
+      jsonResponse: null,
       status: function (code) {
         this.statusCode = code;
         return this;
       },
       json: function (data) {
-        this.userStatus = data.status;
+        this.jsonResponse = data;
       },
     };
-    UserCtrl.getStatus(req, res, () => {})
+    FeedCtrl.createPost(req, res, () => {})
       .then(() => {
-        expect(res.statusCode).to.be.equal(200);
-        expect(res.userStatus).to.be.equal("I'm new");
+        const { statusCode, jsonResponse } = res;
+        expect(statusCode).to.be.equal(201);
+        expect(jsonResponse).to.have.property("post");
+        expect(jsonResponse).to.have.property("creator");
+        expect(jsonResponse.creator).to.have.property("posts");
+        expect(jsonResponse.creator.posts).to.have.length(1);
         done();
       })
       .catch((err) => done(err));

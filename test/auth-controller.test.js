@@ -19,10 +19,12 @@ describe("Auth Controller - Login", () => {
       },
     };
 
-    AuthCtrl.login(req, {}, () => {}).then((result) => {
-      expect(result).to.be.an("error");
-      done();
-    });
+    AuthCtrl.login(req, {}, () => {})
+      .then((result) => {
+        expect(result).to.be.an("error");
+        done();
+      })
+      .catch((err) => done(err));
   });
 
   after(() => {
