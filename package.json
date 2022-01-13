@@ -4,7 +4,7 @@
   "description": "API part of my code following REST API part of Udemy course: https://www.udemy.com/course/nodejs-the-complete-guide/",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 10000",
     "start": "nodemon app.js"
   },
   "repository": {

@@ -1,6 +1,5 @@
 require("dotenv").config();
 const expect = require("chai").expect;
-const sinon = require("sinon");
 const mongoose = require("mongoose");
 
 const User = require("../models/user");
@@ -19,8 +18,23 @@ describe("User Controller - Get Status", () => {
         });
         return user.save();
       })
-      .then((res) => {
-        const req = { user: res._id.toString() };
+      .then((createdUser) => {
+        const req = { userId: createdUser._id.toString() };
+        const res = {
+          statusCode: 500,
+          userStatus: null,
+          status: function (code) {
+            this.statusCode = code;
+            return this;
+          },
+          json: function (data) {
+            this.userStatus = data.status;
+          },
+        };
+        UserCtrl.getStatus(req, res, () => {}).then(() => {
+          expect(res.statusCode).to.be.equal(200);
+          expect(res.userStatus).to.be.equal("I'm new");
+        });
       })
       .catch((err) => console.log(err));
   });
